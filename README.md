@@ -8,7 +8,7 @@ Live at [twoclocks.app](https://twoclocks.app/).
 
 ## Five ways in
 
-- **Before you meet.** For two people who are talking but haven't met. Twelve questions about what you are each looking for, each with a live illustration and a short note on why it matters. One answer, about what draws you, never leaves your device.
+- **Before you meet.** For two people who are talking but haven't met. Seventeen questions about what you are each looking for, from the long-term picture to affection, timing and intimacy, each with a live illustration and a short note on why it matters. One answer, about what draws you, never leaves your device.
 - **The Blueprint.** Twelve questions across four pillars: bandwidth, contact, conflict and intent. Compared side by side, with an agreement to adopt for each difference.
 - **Unopened Rooms.** A deck of 32 questions, plus your own, for the people you already think you know.
 - **Internal Weather.** A ten-second check-in for hectic weeks: how it is inside, how much energy is left, and what would actually help.

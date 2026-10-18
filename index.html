@@ -2089,6 +2089,36 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       options: [bo('exploring', 'Still finding our shape', 'Finding our shape'), bo('committed', 'Committed, in our own homes', 'Committed, own homes'), bo('shared', 'Sharing a home and daily life', 'Sharing a home'), bo('building', 'Building something together: a family, a home, a project', 'Building together')],
       why: 'You do not need to plan a life before a first date. But a rough picture of five, ten and fifteen years shows whether two people are heading toward the same kind of life, once there is something to build on.',
       sci: 'Magnetism tells you there is energy between you. It does not tell you its direction. A shared picture of the future is what turns attraction into a direction.' },
+    { k: 'touch', s: 'tc', type: 'range', late: true, short: 'Physical affection',
+      label: 'How important is physical affection to you, day to day?',
+      ctx: 'Holding hands, a hug, sitting close.',
+      steps: [['Not very', 'I show care in other ways: time, words, practical help.'], ['A little', 'Nice now and then, not something I need.'], ['Moderately', 'Part of how I feel close, alongside other things.'], ['Quite important', 'I feel closer when there is regular affection.'], ['Essential', 'Touch is one of the main ways I feel loved.']],
+      why: 'Affection means different things to different people. For some, touch is the main way closeness is felt. For others, care is shown through time, words or practical help, and touch matters less.',
+      sci: 'Couples tend to understand each other better when each knows how the other most naturally gives and receives care, rather than assuming it is the same as their own.' },
+    { k: 'pda', s: 'pd', type: 'choice', late: true, short: 'Affection in public',
+      label: 'How do you feel about affection in public?',
+      ctx: 'Out together, in front of friends or strangers.',
+      options: [bo('private', 'I keep affection private', 'keeps affection private'), bo('small', 'Small things, like holding hands', 'is comfortable with small things, like holding hands'), bo('open', 'I am comfortable being openly affectionate', 'is comfortable being openly affectionate'), bo('depends', 'It depends on where we are', 'feels it depends on where you are')],
+      why: 'Some people feel warmth in a held hand in the street; others feel exposed. Neither is being cold, and neither is showing off.',
+      sci: 'Comfort with public affection is often shaped by upbringing, culture and faith, so it is worth asking rather than guessing.' },
+    { k: 'physPace', s: 'pp', type: 'choice', late: true, short: 'When closeness feels right',
+      label: 'When does physical closeness, like a kiss, feel right to you?',
+      ctx: 'A general sense, not a promise. It will always depend on the person and the moment.',
+      options: [bo('first', 'It can feel natural on a first date', 'from the first date'), bo('few', 'After a few dates, once there is some trust', 'after a few dates, once there is trust'), bo('later', 'After weeks or months, once we are committed', 'after weeks or months, once you are committed'), bo('commitment', 'Only within marriage or a long-term commitment', 'only within marriage or a long-term commitment'), bo('talk', 'I would rather we talk about it when we get there', 'something to talk about when you get there')],
+      why: 'Being out of step on timing is uncomfortable for both people. One may feel rejected, the other pressured. Knowing early lets the slower pace lead, without either person feeling wrong.',
+      sci: 'Consent is not a single moment but an ongoing agreement. Talking about pace in advance makes it easier to say yes, not yet, or no, and to hear each of those well.' },
+    { k: 'intimacy', s: 'it', type: 'choice', late: true, short: 'Sexual intimacy',
+      label: 'How important is sexual intimacy to you in a relationship?',
+      ctx: 'Over the long run, once there is trust. There is no right answer, and you can choose to talk about it in person instead.',
+      options: [bo('none', 'It is not part of what I am looking for', 'not part of what they are looking for'), bo('small', 'A small part of a relationship for me', 'a small part of a relationship'), bo('one', 'One part among many', 'one part among many'), bo('important', 'Important to me', 'important'), bo('central', 'Central to how I feel close', 'central to how they feel close'), bo('inperson', 'I would rather talk about this in person', 'something to talk about in person')],
+      why: 'Some people discover, months into a relationship, that their need for sexual intimacy is very different from their partner’s. It is one of the quieter reasons good relationships end. Naming it early, without judgement, can save real heartache on both sides.',
+      sci: 'People vary widely here, from those for whom sexual intimacy is central to those who feel little or no sexual attraction, sometimes described as asexual. Every point on that range can be part of a loving relationship, with a partner who wants the same.' },
+    { k: 'initiate', s: 'ii', type: 'choice', late: true, short: 'Who reaches out first',
+      label: 'Who usually reaches out first?',
+      ctx: 'Plans, messages, affection: who tends to start things.',
+      options: [bo('me', 'I tend to initiate', 'tends to initiate'), bo('them', 'I like the other person to initiate', 'likes the other person to initiate'), bo('both', 'It should go both ways', 'feels it should go both ways'), bo('depends', 'It depends on the moment', 'feels it depends on the moment')],
+      why: 'If both people wait for the other to reach out, it can look like disinterest on both sides. If one person always starts things, they may begin to feel they are carrying the connection alone.',
+      sci: 'A simple “I tend to wait”, said early, prevents a great deal of misreading later.' },
     { k: 'rhythm', s: 'rh', type: 'range', short: 'Reply rhythm',
       label: 'How quickly do you usually reply to messages?',
       ctx: 'What you actually do, not what you think you should do.',
@@ -2136,6 +2166,7 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
     BQ.forEach(function (q) {
       var v = r.answers[q.k];
       if (q.priv) { out.answers[q.k] = keepPrivate && bOpt(q.k, v) ? v : null; return; }
+      if (q.late && (v === undefined || v === null)) { out.answers[q.k] = null; return; }
       if (q.type === 'range') { var n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 5) throw new Error('range ' + q.k); out.answers[q.k] = n; }
       else if (q.type === 'choice') { if (!bOpt(q.k, v)) throw new Error('choice ' + q.k); out.answers[q.k] = v; }
       else if (q.type === 'horizon') {
@@ -2273,6 +2304,45 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
         '<circle class="driftA" cx="130" cy="90" r="9" fill="' + T + '"/><circle class="driftB" cx="190" cy="90" r="9" fill="' + G + '"/>' +
         txt(160, 140, 'said clearly, the thread stays kind') + '</svg>';
     }
+    if (k === 'touch') {
+      var tv = a.touch || 3, rings = '';
+      for (var ri = 1; ri <= tv; ri++) rings += '<ellipse cx="160" cy="90" rx="' + (22 + ri * 16) + '" ry="' + (14 + ri * 11) + '" fill="none" stroke="' + T + '" stroke-opacity="' + (0.62 - ri * 0.1).toFixed(2) + '" stroke-width="1.5" class="pulse" style="animation-delay:' + (ri * 0.25) + 's"/>';
+      return '<svg ' + IV + '>' + rings + '<circle cx="146" cy="90" r="9" fill="' + T + '"/><circle cx="174" cy="90" r="9" fill="' + G + '"/>' + txt(160, 172, ['care shown in other ways', 'a little warmth', 'some warmth', 'regular warmth', 'warmth all around'][tv - 1]) + '</svg>';
+    }
+    if (k === 'pda') {
+      var pv = a.pda, xa = pv === 'open' ? 150 : 140, xb = pv === 'open' ? 170 : 180;
+      var house = '<path d="M90 134 L90 70 L160 32 L230 70 L230 134" fill="none" stroke="' + M + '" stroke-width="1.6" stroke-linejoin="round"' + (pv === 'depends' ? ' stroke-dasharray="5 6"' : '') + '/>';
+      return '<svg ' + IV + '><line x1="20" y1="134" x2="300" y2="134" stroke="' + L + '"/>' + (pv === 'private' || pv === 'depends' ? house : '') +
+        (pv === 'small' || pv === 'open' ? '<line x1="' + xa + '" y1="112" x2="' + xb + '" y2="112" stroke="var(--ink)" stroke-width="2" class="pop"/>' : '') +
+        (pv === 'open' ? '<path d="M150 72 Q160 62 170 72" fill="none" stroke="' + T + '" stroke-width="1.6" class="pulse"/><path d="M144 62 Q160 46 176 62" fill="none" stroke="' + T + '" stroke-width="1.4" class="pulse" style="animation-delay:.3s"/>' : '') +
+        '<g class="bf-move" style="transform:translateX(' + xa + 'px)"><circle cx="0" cy="88" r="8" fill="' + T + '"/><line x1="0" y1="96" x2="0" y2="134" stroke="' + T + '" stroke-width="2.4"/></g>' +
+        '<g class="bf-move" style="transform:translateX(' + xb + 'px)"><circle cx="0" cy="88" r="8" fill="' + G + '"/><line x1="0" y1="96" x2="0" y2="134" stroke="' + G + '" stroke-width="2.4"/></g>' +
+        txt(160, 164, { private: 'kept for home', small: 'a held hand', open: 'openly affectionate', depends: 'it depends where' }[pv] || 'out together') + '</svg>';
+    }
+    if (k === 'physPace') {
+      var dx = [40, 90, 140, 190, 240, 290], at = { first: 0, few: 2, later: 4 }[a.physPace];
+      var sp = '<svg ' + IV + '><line x1="40" y1="96" x2="290" y2="96" stroke="' + L + '" stroke-width="1.5"/>' + dx.map(function (x) { return '<circle cx="' + x + '" cy="96" r="5" fill="var(--bg)" stroke="' + M + '" stroke-width="1.4"/>'; }).join('') +
+        txt(40, 124, 'first date') + txt(290, 124, 'months on');
+      if (at !== undefined) sp += '<circle cx="' + dx[at] + '" cy="96" r="11" fill="none" stroke="' + T + '" stroke-width="2" class="pop"/><circle cx="' + dx[at] + '" cy="96" r="5" fill="' + T + '" class="pop"/>';
+      if (a.physPace === 'commitment') sp += '<circle cx="290" cy="96" r="14" fill="none" stroke="' + T + '" stroke-width="2" class="pop"/><circle cx="290" cy="96" r="19" fill="none" stroke="' + T + '" stroke-width="1.2" class="pop" style="animation-delay:.15s"/>' + txt(290, 62, 'commitment');
+      if (a.physPace === 'talk') sp += '<rect x="122" y="40" width="76" height="28" rx="8" fill="var(--surface-2)" class="pop"/>' + txt(160, 58, 'let’s talk');
+      return sp + '</svg>';
+    }
+    if (k === 'intimacy') {
+      var iv = bIdx('intimacy', a.intimacy), talkOnly = a.intimacy === 'inperson', bars = '';
+      for (var bi = 0; bi < 5; bi++) {
+        var bh = 18 + bi * 18, on = !talkOnly && iv >= bi && iv >= 0;
+        bars += '<rect x="' + (78 + bi * 36) + '" y="' + (136 - bh) + '" width="22" height="' + bh + '" rx="2" fill="' + (on ? T : 'none') + '" stroke="' + (on ? T : L) + '" stroke-width="1.4"' + (talkOnly ? ' stroke-dasharray="4 4"' : '') + (on ? ' class="pop" style="animation-delay:' + (bi * 0.06) + 's"' : '') + '/>';
+      }
+      return '<svg ' + IV + '>' + bars + (talkOnly ? '<rect x="112" y="16" width="96" height="28" rx="8" fill="var(--surface-2)" class="pop"/>' + txt(160, 34, 'in person') : '') +
+        txt(160, 164, talkOnly ? 'to talk about when you meet' : iv >= 0 ? ['not part of it', 'a small part', 'one part among many', 'important', 'central'][iv] : 'a wide, normal range') + '</svg>';
+    }
+    if (k === 'initiate') {
+      var nv = a.initiate;
+      var arrow = function (x1, x2, y, col) { var dir = x2 > x1 ? 1 : -1; return '<line x1="' + x1 + '" y1="' + y + '" x2="' + (x2 - dir * 6) + '" y2="' + y + '" stroke="' + col + '" stroke-width="2" class="pop"/><path d="M' + x2 + ' ' + y + ' L' + (x2 - dir * 10) + ' ' + (y - 6) + ' L' + (x2 - dir * 10) + ' ' + (y + 6) + ' Z" fill="' + col + '" class="pop"/>'; };
+      var body = nv === 'me' ? arrow(118, 202, 90, T) : nv === 'them' ? arrow(202, 118, 90, G) : nv === 'both' ? arrow(118, 202, 78, T) + arrow(202, 118, 102, G) : '<line x1="118" y1="90" x2="202" y2="90" stroke="' + M + '" stroke-width="1.6" stroke-dasharray="5 6"/>';
+      return '<svg ' + IV + '><circle cx="100" cy="90" r="11" fill="' + T + '"/><circle cx="220" cy="90" r="11" fill="' + G + '"/>' + body + txt(100, 124, 'you') + txt(220, 124, 'them') + '</svg>';
+    }
     if (k === 'know') {
       return '<svg ' + IV + ' class="ill-write"><rect x="80" y="26" width="160" height="120" rx="4" fill="var(--sheet)" stroke="' + L + '"/>' +
         [56, 80, 104].map(function (y, i) { return '<line x1="100" y1="' + y + '" x2="' + (i === 2 ? 180 : 220) + '" y2="' + y + '" stroke="' + (i === 0 ? T : M) + '" stroke-width="2" pathLength="100" style="animation-delay:' + (i * 0.35) + 's"/>'; }).join('') + '</svg>';
@@ -2318,6 +2388,7 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       '<li><h3>What you are each looking for</h3><p>What you are open to, and what draws you (kept private)</p></li>' +
       '<li><h3>The shape of togetherness</h3><p>Pace, how often in person, how much space, and home</p></li>' +
       '<li><h3>The long picture</h3><p>Five, ten and fifteen years, once there is a foundation</p></li>' +
+      '<li><h3>Closeness</h3><p>Affection, touch, timing and intimacy, with the option to talk in person</p></li>' +
       '<li><h3>The practical things</h3><p>Reply rhythm, settled decisions, a first meeting, and an honest ending</p></li></ol>';
   }
   function bIntro() {
@@ -2326,10 +2397,10 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       return '<main class="wrap">' + bannerHtml() +
         '<section class="hero invite"><div class="from"><span class="avatar a" aria-hidden="true">' + initial(bName('A')) + '</span><span>From ' + esc(bName('A')) + '</span></div>' +
         '<h1 class="display" tabindex="-1" id="bf-h">' + esc(bName('A')) + ' would like to compare, before you meet.</h1>' +
-        '<p class="lede">Twelve short questions about what you are each looking for. Answer honestly; their answers stay folded away until you have finished, so yours are not nudged.</p>' +
+        '<p class="lede">Seventeen short questions about what you are each looking for. Answer honestly; their answers stay folded away until you have finished, so yours are not nudged.</p>' +
         '<div class="hero-threads">' + threads('', 1200, 110, true) + '</div>' +
         '<div class="hero-actions"><button class="btn accent" data-act="bf-start">Answer my side</button><button class="btn ghost" data-act="bf-fresh">Start my own instead</button></div></section>' +
-        '<h2 class="section-title">What you will cover</h2><p class="section-sub">About five minutes.</p>' + bTopicList() +
+        '<h2 class="section-title">What you will cover</h2><p class="section-sub">About seven minutes.</p>' + bTopicList() +
         '<p class="colophon">Nothing here identifies you. A first name or an initial is enough, and your answers travel only in the link you send back.</p></main>';
     }
     return '<main class="wrap">' + bannerHtml() +
@@ -2337,8 +2408,8 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       '<p class="lede">You have been talking for a while. There is something between you, a pull you cannot quite name. But a pull toward what? Toward the same kind of life, or toward a picture each of you has filled in alone? Two weeks of messages tell you a great deal about someone’s days, and very little about what they are looking for.</p>' +
       '<p class="lede" style="margin-top:-14px">These questions ask the things that usually surface months later. Not to screen anyone out, but so that meeting becomes a conscious choice.</p>' +
       '<div class="hero-threads">' + threads('', 1200, 110, true) + '</div>' +
-      '<div class="hero-actions"><button class="btn accent" data-act="bf-start">Begin, about five minutes</button><button class="btn ghost" data-act="mode" data-mode="blueprint">Already met? Go to the Blueprint</button></div></section>' +
-      '<h2 class="section-title">What it asks</h2><p class="section-sub">Twelve questions, each with a short note on why it matters.</p>' + bTopicList() +
+      '<div class="hero-actions"><button class="btn accent" data-act="bf-start">Begin, about seven minutes</button><button class="btn ghost" data-act="mode" data-mode="blueprint">Already met? Go to the Blueprint</button></div></section>' +
+      '<h2 class="section-title">What it asks</h2><p class="section-sub">Seventeen questions, each with a short note on why it matters.</p>' + bTopicList() +
       '<p class="colophon">Nothing here identifies you, and nothing is stored on a server. Your answers travel only inside the link you choose to send. One answer, about what draws you, never leaves your device at all.</p></main>';
   }
   function bQuiz() {
@@ -2518,6 +2589,42 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       add(sg >= 3 ? 'friction' : 'note', 'How much to share', more + ' pictures lives that are ' + BQK.space.steps[Math.max(a.space, b.space) - 1][0].toLowerCase() + '; ' + less + ' ' + BQK.space.steps[Math.min(a.space, b.space) - 1][0].toLowerCase() + '.',
         'Talk about what “enough time to yourself” means for each of you.', 'Ask what a good evening alone looks like for them.');
     }
+    // closeness
+    if (a.intimacy && b.intimacy) {
+      if (a.intimacy === 'inperson' || b.intimacy === 'inperson') {
+        var who = a.intimacy === 'inperson' && b.intimacy === 'inperson' ? 'You would both' : (a.intimacy === 'inperson' ? nA : nB) + ' would';
+        add('note', 'Intimacy, to talk about in person', who + ' rather talk about sexual intimacy in person. Raise it gently once there is some trust, and before things become serious.');
+      } else {
+        var ia = bIdx('intimacy', a.intimacy), ib = bIdx('intimacy', b.intimacy), ig = Math.abs(ia - ib);
+        if (ig >= 2) add('friction', 'A different place for sexual intimacy', nA + ' said sexual intimacy is ' + bOpt('intimacy', a.intimacy).p + '; ' + nB + ' said it is ' + bOpt('intimacy', b.intimacy).p + '. This is one of the differences that most often ends relationships later, and one of the least talked about early. Neither need is wrong.',
+          'Talk about it honestly and early, without pressure, and respect where each of you stands.', 'When it feels right, talk honestly about what closeness means to each of you.');
+        else if (ig === 1) add('note', 'Close on intimacy', nA + ' said sexual intimacy is ' + bOpt('intimacy', a.intimacy).p + '; ' + nB + ', ' + bOpt('intimacy', b.intimacy).p + '.');
+        else add('synergy', 'The same place for intimacy', 'You both said sexual intimacy is ' + bOpt('intimacy', a.intimacy).p + '.');
+      }
+    }
+    if (a.physPace && b.physPace) {
+      if (a.physPace === 'talk' || b.physPace === 'talk') {
+        add('note', 'Timing, to talk about together', (a.physPace === 'talk' && b.physPace === 'talk' ? 'You would both' : (a.physPace === 'talk' ? nA : nB) + ' would') + ' rather talk about physical closeness when you get there. A gentle, open conversation will serve you both.');
+      } else {
+        var pa = bIdx('physPace', a.physPace), pb = bIdx('physPace', b.physPace), ppg = Math.abs(pa - pb);
+        var slowP = pa > pb ? nA : nB, fastP = pa > pb ? nB : nA, slowV = pa > pb ? a.physPace : b.physPace, fastV = pa > pb ? b.physPace : a.physPace;
+        if (ppg >= 2) add('friction', 'Different timing for physical closeness', slowP + ' feels closeness is right ' + bOpt('physPace', slowV).p + '; ' + fastP + ' ' + bOpt('physPace', fastV).p + '.',
+          'Let the slower pace lead. Closeness should always be welcome on both sides.', 'Talk about how you would each like closeness to unfold.');
+        else if (ppg === 1) add('note', 'Similar timing', slowP + ' feels closeness is right ' + bOpt('physPace', slowV).p + '; ' + fastP + ' ' + bOpt('physPace', fastV).p + '. Close, with the slower pace leading.');
+        else add('synergy', 'The same sense of timing', 'You both feel physical closeness is right ' + bOpt('physPace', a.physPace).p + '.');
+      }
+    }
+    if (a.touch && b.touch && Math.abs(a.touch - b.touch) >= 2) {
+      var mT = a.touch > b.touch ? nA : nB, lT = a.touch > b.touch ? nB : nA;
+      add('note', 'Different need for touch', mT + ' finds physical affection ' + BQK.touch.steps[Math.max(a.touch, b.touch) - 1][0].toLowerCase() + '; ' + lT + ', ' + BQK.touch.steps[Math.min(a.touch, b.touch) - 1][0].toLowerCase() + '.', 'Ask each other how you most like to be shown care.');
+    }
+    if (a.pda && b.pda && ((a.pda === 'private' && b.pda === 'open') || (a.pda === 'open' && b.pda === 'private'))) {
+      add('note', 'Affection in public', nA + ' ' + bOpt('pda', a.pda).p + '; ' + nB + ' ' + bOpt('pda', b.pda).p + '.', 'Agree what feels comfortable when you are out together.');
+    }
+    if (a.initiate && b.initiate) {
+      if (a.initiate === 'them' && b.initiate === 'them') add('note', 'You both wait to be asked', 'You each like the other person to reach out first. Left unsaid, this can look like disinterest on both sides.', 'Take turns starting things, and say that you will.');
+      else if ((a.initiate === 'me' && b.initiate === 'them') || (a.initiate === 'them' && b.initiate === 'me')) add('synergy', 'A natural fit on who starts things', (a.initiate === 'me' ? nA : nB) + ' tends to initiate and ' + (a.initiate === 'me' ? nB : nA) + ' likes to be asked. That can work well, as long as it does not become one-sided.');
+    }
     // rhythm
     if (Math.abs(a.rhythm - b.rhythm) >= 3) {
       var quick = a.rhythm > b.rhythm ? nA : nB, slowR = a.rhythm > b.rhythm ? nB : nA;
@@ -2567,6 +2674,7 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       lvTrack +
       bTrack('Pace', a.pace - 1, b.pace - 1, 5, ['Very slowly', 'Quickly'], BQK.pace.steps[a.pace - 1][0], BQK.pace.steps[b.pace - 1][0]) +
       bTrack('Reply rhythm', a.rhythm - 1, b.rhythm - 1, 5, ['Slowly, by design', 'Within minutes'], BQK.rhythm.steps[a.rhythm - 1][0], BQK.rhythm.steps[b.rhythm - 1][0]) +
+      bCloseness(a, b, nA, nB) +
       '<h2 class="section-title">Worth knowing</h2><p class="section-sub">Drawn from where your answers meet. Each difference comes with something you could agree.</p>' +
       '<div class="insights">' + ins.map(function (i) { return '<article class="insight ' + i.type + '"><span class="kind">' + kindMeta[i.type] + '</span><h4>' + esc(i.title) + '</h4><p>' + esc(i.body) + '</p>' + (i.agreement ? '<div class="agree"><b>Something to agree</b>' + esc(i.agreement) + '</div>' : '') + '</article>'; }).join('') + '</div>' +
       '<h2 class="section-title">In your own words</h2><p class="section-sub">Settled decisions, and what each of you wanted the other to know.</p>' +
@@ -2580,6 +2688,20 @@ dialog::backdrop{background:rgba(22,21,19,.5)}
       '<button class="btn" data-act="print">' + I.print + ' Print / save PDF</button>' +
       (B.me ? '<button class="btn" data-act="bf-to-blueprint">After you have met: start the Blueprint</button><button class="btn" data-act="bf-edit">' + I.edit + ' Change my answers</button>' : '') +
       '<button class="btn ghost" data-act="bf-fresh">' + I.reset + ' Start over</button></div></div>' + footnote() + '</main>';
+  }
+  function bCloseness(a, b, nA, nB) {
+    var h = '';
+    if (a.touch && b.touch) h += bTrack('Physical affection', a.touch - 1, b.touch - 1, 5, ['Not very', 'Essential'], BQK.touch.steps[a.touch - 1][0], BQK.touch.steps[b.touch - 1][0]);
+    if (a.pda && b.pda) h += choiceRowBefore('Affection in public', nA, nB, bOpt('pda', a.pda).t, bOpt('pda', b.pda).t, a.pda === b.pda);
+    if (a.physPace && b.physPace) h += (a.physPace === 'talk' || b.physPace === 'talk')
+      ? choiceRowBefore('When closeness feels right', nA, nB, bOpt('physPace', a.physPace).t, bOpt('physPace', b.physPace).t, a.physPace === b.physPace)
+      : bTrack('When closeness feels right', bIdx('physPace', a.physPace), bIdx('physPace', b.physPace), 4, ['From a first date', 'Within commitment'], bOpt('physPace', a.physPace).t, bOpt('physPace', b.physPace).t);
+    if (a.intimacy && b.intimacy) h += (a.intimacy === 'inperson' || b.intimacy === 'inperson')
+      ? choiceRowBefore('Sexual intimacy', nA, nB, bOpt('intimacy', a.intimacy).t, bOpt('intimacy', b.intimacy).t, a.intimacy === b.intimacy)
+      : bTrack('Sexual intimacy', bIdx('intimacy', a.intimacy), bIdx('intimacy', b.intimacy), 5, ['Not part of it', 'Central'], bOpt('intimacy', a.intimacy).t, bOpt('intimacy', b.intimacy).t);
+    if (a.initiate && b.initiate) h += choiceRowBefore('Who reaches out first', nA, nB, bOpt('initiate', a.initiate).t, bOpt('initiate', b.initiate).t, a.initiate === b.initiate);
+    if (!h) return '';
+    return '<h2 class="section-title">Closeness</h2><p class="section-sub">Affection, timing and intimacy. The most personal part, so read it gently.</p>' + h;
   }
   function choiceRowBefore(label, nA, nB, ta, tb, same) {
     return '<div class="dim"><div class="dim-head"><h4>' + esc(label) + '</h4><span class="tag ' + (same ? 'same">Aligned' : 'some">Different') + '</span></div><div class="pills">' + pill('a', nA, ta) + pill('b', nB, tb) + '</div></div>';
